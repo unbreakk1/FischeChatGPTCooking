@@ -2,24 +2,33 @@ package com.example.chatgptbasedcookingingredients;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping("/ingredients")
+@RequestMapping("/api/open")
 @RequiredArgsConstructor
 public class IngredientController
 {
+    private final IngredientService ingredientService;
 
     @PostMapping
-    String categorizeIngredient(@RequestBody String ingredient)
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> categorizeIngredient(@RequestBody String ingredient)
     {
+        String category = ingredientService.categorizeIngredient(ingredient);
 
-        // TODO: This should return "vegan", "vegetarian" or "regular" depending on the ingredient.
-
-        return "vegan";
+        return Map.of("ingredient", ingredient, "category", category);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, String> handleException(RuntimeException ex)
+    {
+        return Map.of("error", ex.getMessage());
+    }
+
 
 }
