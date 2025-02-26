@@ -46,7 +46,12 @@ public class IngredientService
 
     private String formatPrompt(String ingredient)
     {
-        return String.format("What category is the ingredient '%s'? (vegan, vegetarian, regular)", ingredient);
+       // return String.format("What category is the ingredient '%s'? (vegan, vegetarian, regular)", ingredient);
+        return String.format(
+                "Classify the ingredient '%s' as one of the following categories: 'vegan', 'vegetarian', or 'regular'. "
+                        + "Respond with only one word: 'vegan', 'vegetarian', or 'regular'. Do not provide any additional explanation.",
+                ingredient);
+
     }
 
     private String extractCategoryFromResponse(OpenAiResponse response)
@@ -56,6 +61,4 @@ public class IngredientService
 
         return response.choices()[0].message().content().trim();
     }
-
-
 }
